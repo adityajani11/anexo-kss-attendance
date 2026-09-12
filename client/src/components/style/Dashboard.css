@@ -1,0 +1,123 @@
+/* General styles */
+.container {
+  margin: auto;
+}
+
+.dashboard-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+  color: #333;
+}
+
+.subtitle {
+  font-size: 1rem;
+  color: #555;
+  font-weight: normal;
+}
+
+/* Custom card styles */
+.custom-card {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  color: #fff;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  min-height: 205px; /* Adjust the minimum height of the card */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Ensure that the content is spaced out evenly */
+}
+
+.custom-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+}
+
+.custom-card-body {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  flex-grow: 1; /* Allow the card body to expand */
+  overflow: hidden; /* Prevent overflow of content */
+}
+
+.custom-card-details {
+  text-align: left;
+}
+
+.custom-card-value {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.custom-card-title {
+  font-size: 1.2rem;
+  margin: 0;
+  text-transform: capitalize;
+}
+
+.custom-card-icon {
+  font-size: 4.5rem; /* Default icon size */
+  opacity: 0.8;
+  transition: font-size 0.9s ease; /* Smooth transition for resizing */
+  max-width: 100%; /* Ensure the icon doesn't exceed its container */
+  max-height: 100%; /* Ensure the icon doesn't exceed its container */
+}
+
+.custom-card-footer {
+  padding: 15px;
+  background-color: rgba(255, 255, 255, 0.1);
+  text-align: right;
+  font-size: 1rem;
+  color: #fff;
+}
+
+/* Attractive Gradient for Class total , 9 , 10 Students */
+.bg-gradient-class9 {
+  background: linear-gradient(135deg,#ff656a , #ffa57b) !important;
+}
+
+.bg-gradient-class10 {
+  background: linear-gradient(135deg, #e83e8c, #f8a0b7) !important;
+}
+
+.bg-gradient-pie {
+  background: linear-gradient(135deg, #3565ad, #63b0e3) !important;
+}
+
+.bg-gradient-total-student {
+  background: linear-gradient(135deg, #00cfe8, #1e95b1) !important;
+}
+
+/* Media Queries for responsive icon size */
+@media (max-width: 1200px) {
+  .custom-card-icon {
+    font-size: 4rem;
+  }
+}
+
+@media (max-width: 992px) {
+  .custom-card-icon {
+    font-size: 4rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .custom-card-icon {
+    font-size: 4rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .custom-card-icon {
+    font-size: 4rem;
+  }
+}
+
+@media (max-width: 460px) {
+  .custom-card-icon {
+    font-size: 4rem; /* Further reduce the icon size for smaller screens */
+  }
+}

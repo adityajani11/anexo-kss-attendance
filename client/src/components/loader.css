@@ -1,0 +1,31 @@
+.loader-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loader {
+  width: 15px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  animation: l5 1s infinite linear alternate;
+}
+
+@keyframes l5 {
+  0% {
+    box-shadow: 20px 0 #28283d, -20px 0 rgba(40, 40, 61, 0.2);
+    background: #28283d;
+  }
+  33% {
+    box-shadow: 20px 0 rgba(40, 40, 61, 0.2), -20px 0 #28283d;
+    background: rgba(40, 40, 61, 0.2);
+  }
+  66% {
+    box-shadow: 20px 0 rgba(40, 40, 61, 0.2), -20px 0 #28283d;
+    background: rgba(40, 40, 61, 0.2);
+  }
+  100% {
+    box-shadow: 20px 0 #28283d, -20px 0 rgba(40, 40, 61, 0.2);
+    background: #28283d;
+  }
+}

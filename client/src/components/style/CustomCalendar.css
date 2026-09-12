@@ -1,0 +1,40 @@
+.calendar-container {
+  padding: 20px;
+  background-color: #f3f5f7;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  z-index: 1;
+}
+
+.react-big-calendar {
+  height: 500px;
+  border-radius: 8px;
+}
+.navbar{
+  z-index: 1000;
+}
+.event-present {
+  background-color: #28a745;
+  color: white;
+  border-radius: 4px;
+  padding: 5px;
+  font-weight: bold;
+  position: relative;
+  z-index: 1;
+}
+
+.event-absent {
+  background-color: #dc3545;
+  color: white;
+  border-radius: 4px;
+  padding: 5px;
+  font-weight: bold;
+}
+
+.event-others {
+  background-color: #ffc107;
+  color: white;
+  border-radius: 4px;
+  padding: 5px;
+  font-weight: bold;
+}
