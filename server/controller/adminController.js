@@ -8,19 +8,35 @@ exports.loginAdmin = async (req, res) => {
     const admin = await Admin.findOne({ username: req.body.username });
 
     if (!admin) {
-      return res.status(401).json({ message: "Invalid credentials. Please try again." });
+      return res
+        .status(401)
+        .json({ message: "Invalid credentials. Please try again." });
     }
 
-    const passwordMatch = await bcrypt.compare(req.body.password, admin.password);
+    const passwordMatch = await bcrypt.compare(
+      req.body.password,
+      admin.password,
+    );
     if (!passwordMatch) {
-      return res.status(401).json({ message: "Invalid credentials. Please try again." });
+      return res
+        .status(401)
+        .json({ message: "Invalid credentials. Please try again." });
     }
 
-    const token = jwt.sign({ id: admin._id }, process.env.JWT_SECRET, { expiresIn: "2h" });
+    const token = jwt.sign({ id: admin._id }, process.env.JWT_SECRET, {
+      expiresIn: "2h",
+    });
 
-    res.status(200).json({ message: "Login successful", token, adminId: admin._id });
+    res
+      .status(200)
+      .json({ message: "Login successful", token, adminId: admin._id });
   } catch (error) {
-    res.status(400).json({ message: "Failed to login" });
+    console.error("Admin login error:", error);
+
+    res.status(500).json({
+      message: "Failed to login",
+      error: error.message,
+    });
   }
 };
 
@@ -104,7 +120,9 @@ exports.changeVerificationPassword = async (req, res) => {
     loggedInAdmin.verificationPassword = hashedVerificationPassword;
     await loggedInAdmin.save();
 
-    res.status(200).json({ message: "Verification password updated successfully." });
+    res
+      .status(200)
+      .json({ message: "Verification password updated successfully." });
   } catch (error) {
     res.status(500).json({ error: "Internal server error." });
   }
@@ -118,7 +136,8 @@ exports.changeAdminContact = async (req, res) => {
     // Validate inputs
     if (!username || !currentContact || !newContact) {
       return res.status(400).json({
-        message: "Username, current contact, and new contact number are required.",
+        message:
+          "Username, current contact, and new contact number are required.",
       });
     }
 
@@ -131,19 +150,27 @@ exports.changeAdminContact = async (req, res) => {
     }
 
     if (isNaN(newContact) || isNaN(currentContact)) {
-      return res.status(400).json({ message: "Invalid contact number format." });
+      return res
+        .status(400)
+        .json({ message: "Invalid contact number format." });
     }
 
     // Ensure both contacts are exactly 10-digit numbers
     const contactNumberPattern = /^\d{10}$/;
-    if (!contactNumberPattern.test(newContact.toString()) || !contactNumberPattern.test(currentContact.toString())) {
-      return res.status(400).json({ message: "Both contact numbers must be 10-digit numbers." });
+    if (
+      !contactNumberPattern.test(newContact.toString()) ||
+      !contactNumberPattern.test(currentContact.toString())
+    ) {
+      return res
+        .status(400)
+        .json({ message: "Both contact numbers must be 10-digit numbers." });
     }
 
     // Check if the new contact number is the same as the current one
     if (currentContact === newContact) {
       return res.status(400).json({
-        message: "The new contact number cannot be the same as the current contact number.",
+        message:
+          "The new contact number cannot be the same as the current contact number.",
       });
     }
 
@@ -155,7 +182,8 @@ exports.changeAdminContact = async (req, res) => {
 
     if (admin.contact !== currentContact) {
       return res.status(400).json({
-        message: "The current contact number provided does not match the existing contact number in the database.",
+        message:
+          "The current contact number provided does not match the existing contact number in the database.",
       });
     }
 
@@ -175,7 +203,7 @@ exports.changeAdminContact = async (req, res) => {
   }
 };
 
-exports.changeAdminUsername =  async (req, res) => {
+exports.changeAdminUsername = async (req, res) => {
   const { currentUsername, contact, newUsername } = req.body;
 
   try {
@@ -183,16 +211,24 @@ exports.changeAdminUsername =  async (req, res) => {
     const admin = await Admin.findOneAndUpdate(
       { username: currentUsername, contact },
       { username: newUsername },
-      { new: true }
+      { new: true },
     );
 
     if (!admin) {
-      return res.status(404).json({ success: false, message: 'Failed to update username. Invalid current details.' });
+      return res.status(404).json({
+        success: false,
+        message: "Failed to update username. Invalid current details.",
+      });
     }
 
-    res.status(200).json({ success: true, message: 'Username updated successfully.' });
+    res
+      .status(200)
+      .json({ success: true, message: "Username updated successfully." });
   } catch (error) {
-    res.status(500).json({ success: false, message: 'Server error, please try again later.' });
+    res.status(500).json({
+      success: false,
+      message: "Server error, please try again later.",
+    });
   }
 };
 
@@ -204,9 +240,13 @@ exports.validateAdmin = async (req, res) => {
     const admin = await Admin.findOne({ username, contact });
 
     if (admin) {
-      return res.status(200).json({ success: true, message: "Valid credentials." });
+      return res
+        .status(200)
+        .json({ success: true, message: "Valid credentials." });
     } else {
-      return res.status(400).json({ success: false, message: "Invalid credentials." });
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid credentials." });
     }
   } catch (error) {
     return res.status(500).json({ success: false, message: "Server error." });
@@ -215,7 +255,8 @@ exports.validateAdmin = async (req, res) => {
 
 // Register Admin
 exports.registerAdmin = async (req, res) => {
-  const { username, contact, emailId, password, verificationPassword } = req.body;
+  const { username, contact, emailId, password, verificationPassword } =
+    req.body;
 
   try {
     // Check if admin already exists
@@ -228,7 +269,10 @@ exports.registerAdmin = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Encrypt the verification password
-    const hashedverificationPassword = await bcrypt.hash(verificationPassword, 10);
+    const hashedverificationPassword = await bcrypt.hash(
+      verificationPassword,
+      10,
+    );
 
     // Create a new admin
     const newAdmin = new Admin({
@@ -236,7 +280,7 @@ exports.registerAdmin = async (req, res) => {
       contact,
       emailId,
       password: hashedPassword,
-      verificationPassword: hashedverificationPassword
+      verificationPassword: hashedverificationPassword,
     });
 
     // Save the new admin to the database
@@ -246,15 +290,14 @@ exports.registerAdmin = async (req, res) => {
     const token = jwt.sign(
       { id: newAdmin._id, username: newAdmin.username },
       process.env.JWT_SECRET,
-      { expiresIn: '2h' }
+      { expiresIn: "2h" },
     );
 
     // Return the token in the response
     res.status(201).json({
-      message: 'Admin registered successfully',
+      message: "Admin registered successfully",
       token, // Include the token in the response
     });
-
   } catch (error) {
     res.status(500).json({ message: "Server Error", error: error.message });
   }
@@ -267,13 +310,17 @@ exports.verifyAdminPassword = async (req, res) => {
     // Find the admin by ID using findOne to ensure proper data handling
     const admin = await Admin.findOne({ _id: adminId });
     if (!admin) {
-      return res.status(404).json({ success: false, message: "Admin not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Admin not found" });
     }
 
     // Compare password
     const isMatch = await bcrypt.compare(password, admin.password);
     if (!isMatch) {
-      return res.status(401).json({ success: false, message: "Incorrect password" });
+      return res
+        .status(401)
+        .json({ success: false, message: "Incorrect password" });
     }
     res.status(200).json({ success: true, message: "Password verified" });
   } catch (error) {
@@ -288,15 +335,24 @@ exports.verifyVerificationPassword = async (req, res) => {
     // Find the admin by ID using findOne to ensure proper data handling
     const admin = await Admin.findOne({ _id: adminId });
     if (!admin) {
-      return res.status(404).json({ success: false, message: "Admin not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Admin not found" });
     }
 
     // Compare password
-    const isMatch = await bcrypt.compare(verificationPassword, admin.verificationPassword);
+    const isMatch = await bcrypt.compare(
+      verificationPassword,
+      admin.verificationPassword,
+    );
     if (!isMatch) {
-      return res.status(401).json({ success: false, message: "Incorrect verification password" });
+      return res
+        .status(401)
+        .json({ success: false, message: "Incorrect verification password" });
     }
-    res.status(200).json({ success: true, message: "Verification Password verified" });
+    res
+      .status(200)
+      .json({ success: true, message: "Verification Password verified" });
   } catch (error) {
     res.status(500).json({ success: false, message: "Internal server error" });
   }
@@ -306,16 +362,20 @@ exports.verifyVerificationPassword = async (req, res) => {
 exports.getAdminContact = async (req, res) => {
   try {
     // Get the adminId from req.user (set by the authenticate middleware)
-    const adminId = req.user.id; 
+    const adminId = req.user.id;
 
     // Find the admin by ID
-    const admin = await Admin.findById(adminId).select('contact');
+    const admin = await Admin.findById(adminId).select("contact");
     if (!admin) {
-      return res.status(404).json({ success: false, message: 'Admin not found' });
+      return res
+        .status(404)
+        .json({ success: false, message: "Admin not found" });
     }
     return res.status(200).json({ success: true, contact: admin.contact });
   } catch (err) {
-    return res.status(500).json({ success: false, message: 'Server Error', error: err.message });
+    return res
+      .status(500)
+      .json({ success: false, message: "Server Error", error: err.message });
   }
 };
 
@@ -324,29 +384,33 @@ exports.validateAdminByContactAndPassword = async (req, res) => {
   const { contact, password } = req.body;
 
   if (!contact || !password) {
-      return res.status(400).json({ message: 'Contact number and password are required' });
+    return res
+      .status(400)
+      .json({ message: "Contact number and password are required" });
   }
 
   try {
-      // Find admin by contact number
-      const admin = await Admin.findOne({ contact });
+    // Find admin by contact number
+    const admin = await Admin.findOne({ contact });
 
-      if (!admin) {
-          return res.status(404).json({ message: 'Admin with this contact number not found' });
-      }
+    if (!admin) {
+      return res
+        .status(404)
+        .json({ message: "Admin with this contact number not found" });
+    }
 
-      // Compare the provided password with the stored hashed password
-      const isPasswordValid = await bcrypt.compare(password, admin.password);
+    // Compare the provided password with the stored hashed password
+    const isPasswordValid = await bcrypt.compare(password, admin.password);
 
-      if (!isPasswordValid) {
-          return res.status(401).json({ message: 'Invalid password' });
-      }
+    if (!isPasswordValid) {
+      return res.status(401).json({ message: "Invalid password" });
+    }
 
-      // If everything is correct, return success
-      res.status(200).json({ message: 'Success' });
+    // If everything is correct, return success
+    res.status(200).json({ message: "Success" });
   } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: 'Server error' });
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -355,20 +419,22 @@ exports.fetchUsernameByContact = async (req, res) => {
   const { contact } = req.body; // Get contact from POST body
 
   if (!contact) {
-      return res.status(400).json({ message: 'Contact number is required' });
+    return res.status(400).json({ message: "Contact number is required" });
   }
 
   try {
-      const admin = await Admin.findOne({ contact });
+    const admin = await Admin.findOne({ contact });
 
-      if (!admin) {
-          return res.status(404).json({ message: 'Admin with this contact number not found' });
-      }
+    if (!admin) {
+      return res
+        .status(404)
+        .json({ message: "Admin with this contact number not found" });
+    }
 
-      // Return the username if admin is found
-      res.json({ username: admin.username });
+    // Return the username if admin is found
+    res.json({ username: admin.username });
   } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: 'Server error' });
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
   }
 };
