@@ -29,6 +29,14 @@ app.options("*", cors());
 // Connect to MongoDB
 connectDB();
 
+// Health Check Route
+app.get('/health', (req, res) => {
+  res.status(200).json({
+    status: 'OK',
+    message: 'Server is running'
+  });
+});
+
 // API Routes
 app.use('/api', routes); // Use the routes from index.js
 
