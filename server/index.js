@@ -17,6 +17,7 @@ app.use(cors({
   origin: [
     "https://kssksg.in",
     "https://www.kssksg.in"
+    "https://anexo-kss-attendance.vercel.app"
   ],
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
