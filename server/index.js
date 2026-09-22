@@ -13,7 +13,17 @@ const app = express();
 // Middleware
 app.use(express.json());
 app.use(bodyParser.json());
-app.use(cors());
+app.use(cors({
+  origin: [
+    "https://kssksg.in",
+    "https://www.kssksg.in"
+  ],
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true
+}));
+
+app.options("*", cors());
 
 // Connect to MongoDB
 connectDB();
